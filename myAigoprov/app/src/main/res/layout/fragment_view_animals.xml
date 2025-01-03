@@ -1,0 +1,74 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/radioGoats"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Goats" />
+
+        <RadioButton
+            android:id="@+id/radioSheeps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sheeps" />
+    </RadioGroup>
+
+
+    <TableLayout
+        android:id="@+id/tableLayoutAnimals"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:stretchColumns="1"
+        android:divider="@android:color/darker_gray"
+        android:showDividers="middle"
+        android:background="@android:color/white">
+
+        <!-- Επικεφαλίδες για τον πίνακα -->
+        <TableRow
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ID"
+                android:textColor="@android:color/white"
+                android:padding="8dp"
+                android:gravity="center" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tag"
+                android:textColor="@android:color/white"
+                android:padding="8dp"
+                android:gravity="center" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Gender"
+                android:textColor="@android:color/white"
+                android:padding="8dp"
+                android:gravity="center" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Birthdate"
+                android:textColor="@android:color/white"
+                android:padding="8dp"
+                android:gravity="center" />
+        </TableRow>
+
+        <!-- Εδώ θα προστίθενται οι γραμμές δεδομένων -->
+    </TableLayout>
+
+</LinearLayout>

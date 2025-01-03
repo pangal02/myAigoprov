@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Προσθήκη Ζώου"
+        android:textSize="20sp"
+        android:layout_gravity="center_horizontal" />
+
+    <!-- Επιλογή Τύπου Ζώου -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Τύπος Ζώου"
+        android:layout_marginTop="16dp" />
+
+    <Spinner
+        android:id="@+id/spinnerAnimalType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:spinnerMode="dialog" />
+
+    <!-- Επιλογή Γένους Ζώου -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Γένος Ζώου"
+        android:layout_marginTop="16dp" />
+
+    <Spinner
+        android:id="@+id/spinnerAnimalGender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:spinnerMode="dialog" />
+
+    <!-- Αριθμός Ενωτίου -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Αριθμός Ενωτίου"
+        android:layout_marginTop="16dp" />
+    <EditText
+        android:id="@+id/editTextTagNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Εισάγετε αριθμό"
+        android:inputType="number" />
+
+    <!-- Ημερομηνία Γέννησης -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ημερομηνία Γέννησης"
+        android:layout_marginTop="16dp" />
+    <EditText
+        android:id="@+id/editTextBirthDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Επιλέξτε ημερομηνία"
+        android:focusable="false" />
+
+    <Button
+        android:id="@+id/buttonSelectDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Επιλογή Ημερομηνίας"
+        android:layout_marginTop="8dp" />
+
+    <!-- Κουμπί Αποθήκευσης -->
+    <Button
+        android:id="@+id/buttonSaveAnimal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Αποθήκευση"
+        android:layout_marginTop="16dp" />
+</LinearLayout>
