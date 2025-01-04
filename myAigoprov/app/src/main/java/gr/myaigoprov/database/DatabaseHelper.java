@@ -18,7 +18,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Όνομα της βάσης δεδομένων
     private static final String DATABASE_NAME = "animals.db";
     // Έκδοση της βάσης δεδομένων
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
 
     // Πίνακας για τα Goats
     public static final String TABLE_GOATS = "goats";
@@ -43,7 +43,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Σχέδιο δημιουργίας πίνακα για τα Sheeps
     private static final String CREATE_TABLE_SHEEPS = "CREATE TABLE " + TABLE_SHEEPS + " ("
             + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + COLUMN_TAG_NUMBER + " INTEGER UNIQUE, "
+            + COLUMN_TAG_NUMBER + " INTEGER, "
             + COLUMN_GENDER + " VARCHAR, "
             + COLUMN_BIRTHDATE + " VARCHAR, "
             + COLUMN_YOUNG_MOM + " INTEGER);";
@@ -77,7 +77,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 values.put(COLUMN_GENDER, "ΤΡΑΓΟΣ");
             }
             else if(goat.getGender() == Gender.FEMALE){
-                values.put(COLUMN_GENDER, "ΑΙΓΑ");
+                values.put(COLUMN_GENDER, "ΓΙΔΑ");
             }
             else if(goat.getGender() == Gender.OTHER){
                 values.put(COLUMN_GENDER, "ΑΛΛΟ");

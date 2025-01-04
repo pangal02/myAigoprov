@@ -26,7 +26,7 @@
     <fragment
         android:id="@+id/nav_add_animal"
         android:name="gr.myaigoprov.ui.addAnimal.AddAnimalFragment"
-        android:label="Προσθήκη Ζώου"
+        android:label="Προσθήκη ζώου"
         tools:layout="@layout/fragment_add_animal" />
 
     <fragment
@@ -34,5 +34,11 @@
         android:name="gr.myaigoprov.ui.viewAnimals.ViewAnimals"
         android:label="Προβολη ζώων"
         tools:layout="@layout/fragment_view_animals"/>
+
+    <fragment
+        android:id="@+id/nav_add_all_animals"
+        android:name="gr.myaigoprov.ui.addAllAnimals.AddAllAnimalsFragment"
+        android:label="Μαζική προσθήκη νέων ζώων"
+        tools:layout="@layout/fragment_add_all_animals"/>
 
 </navigation>

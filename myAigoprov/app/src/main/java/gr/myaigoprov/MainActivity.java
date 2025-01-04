@@ -18,10 +18,9 @@ import gr.myaigoprov.databinding.ActivityMainBinding;
 import gr.myaigoprov.model.Farmer;
 
 public class MainActivity extends AppCompatActivity {
-
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
-    public static Farmer farmer = new Farmer("Κωνσταντίνος", "Γαλιώτος", "EL12345", "KONGAL73");
+    public static Farmer farmer = new Farmer("Κωνσταντίνος Γαλιώτος", "EL12345");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow, R.id.nav_add_animal, R.id.nav_view)
+                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow, R.id.nav_add_animal, R.id.nav_view, R.id.nav_add_all_animals)
                 .setOpenableLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
