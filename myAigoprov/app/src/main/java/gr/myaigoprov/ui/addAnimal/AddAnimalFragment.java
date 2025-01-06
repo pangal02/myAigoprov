@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -24,6 +25,7 @@ import gr.myaigoprov.MainActivity;
 import gr.myaigoprov.R;
 
 import gr.myaigoprov.database.*;
+import gr.myaigoprov.manager.UserManager;
 import gr.myaigoprov.model.*;
 
 
@@ -35,10 +37,7 @@ public class AddAnimalFragment extends Fragment {
     private EditText editTextBirthDate;
     private Button buttonSelectDate;
     private Button buttonSaveAnimal;
-    private String date;
 
-    private String mParam1;
-    private String mParam2;
 
     public AddAnimalFragment() {
         // Required empty public constructor
@@ -80,7 +79,7 @@ public class AddAnimalFragment extends Fragment {
             String genderString = spinnerAnimalGender.getSelectedItem().toString();
             String tagNumberString = editTextTagNumber.getText().toString();
             String birthdate = editTextBirthDate.getText().toString();
-            String farmerCode = MainActivity.farmer.getFarmerCode();
+            String farmerCode = UserManager.getInstance(requireContext()).getFarmer().getFarmerCode();
 
             if (tagNumberString.isEmpty() || birthdate.isEmpty()) {
                 Snackbar.make(v, "Παρακαλώ συμπληρώστε όλα τα πεδία!", Snackbar.LENGTH_LONG).show();
@@ -100,9 +99,21 @@ public class AddAnimalFragment extends Fragment {
                 gender = Gender.OTHER;
             }
 
+            Farmer farmer = UserManager.getInstance(getContext()).getFarmer();
+            if(animalType.equalsIgnoreCase("ΠΡΟΒΑΤΟ") &&
+                    farmer.getAnimalsType().equalsIgnoreCase("ΓΙΔΙΑ")){
+                Toast.makeText(requireContext(), "Δεν μπορείτε να προσθέσετε " + animalType + " ενώ έχετε " + farmer.getAnimalsType()+ "!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if(animalType.equalsIgnoreCase("ΑΙΓΑ") &&
+                    farmer.getAnimalsType().equalsIgnoreCase("ΠΡΟΒΑΤΑ")){
+                Toast.makeText(requireContext(), "Δεν μπορείτε να προσθέσετε " + animalType + " ενώ έχετε " + farmer.getAnimalsType()+ "!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             Animal animal;
             // Δημιουργία του αντικειμένου Animal
-            if(animalType.equals("ΓΙΔΙ")){
+            if(animalType.equals("ΑΙΓΑ")){
                 animal = new Goat(farmerCode, tagNumber, gender, birthdate);
             }
             else {

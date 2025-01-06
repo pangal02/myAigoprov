@@ -1,9 +1,11 @@
-package gr.myaigoprov.ui.addAllAnimals;
+package gr.myaigoprov.ui.addBornAnimals;
 
 import android.app.DatePickerDialog;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -13,24 +15,20 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 
 import gr.myaigoprov.R;
 import gr.myaigoprov.database.DatabaseHelper;
-import gr.myaigoprov.model.Animal;
-import gr.myaigoprov.model.Gender;
-import gr.myaigoprov.model.Goat;
-import gr.myaigoprov.model.Sheep;
+import gr.myaigoprov.manager.UserManager;
+import gr.myaigoprov.model.*;
 
 
-public class AddAllAnimalsFragment extends Fragment {
+public class AddBornAnimalsFragment extends Fragment {
 
     private Spinner spinnerAnimalType;
     private EditText strNumOfAnimals;
@@ -39,8 +37,8 @@ public class AddAllAnimalsFragment extends Fragment {
     private Button saveButton;
 
 
-    public AddAllAnimalsFragment() {
-        // Required empty public constructor
+    public AddBornAnimalsFragment() {
+        super(R.layout.fragment_add_born_animals);
     }
 
 
@@ -49,12 +47,11 @@ public class AddAllAnimalsFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View root = inflater.inflate(R.layout.fragment_add_all_animals, container, false);
+        View root = inflater.inflate(R.layout.fragment_add_born_animals, container, false);
         // Σύνδεση UI στοιχείων
         spinnerAnimalType = root.findViewById(R.id.spinnerAnimalType);
         strNumOfAnimals = root.findViewById(R.id.etAnimalCount);
@@ -63,7 +60,7 @@ public class AddAllAnimalsFragment extends Fragment {
         saveButton = root.findViewById(R.id.btnSave);
 
         // Ρύθμιση επιλογών για το Spinner
-        ArrayAdapter<CharSequence> typeAnimalAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.animal_types, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> typeAnimalAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.born_animal_types, android.R.layout.simple_spinner_item);
         typeAnimalAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerAnimalType.setAdapter(typeAnimalAdapter);
 
@@ -73,23 +70,33 @@ public class AddAllAnimalsFragment extends Fragment {
             String animalType = spinnerAnimalType.getSelectedItem().toString();
             int numOfAnimals = Integer.parseInt(strNumOfAnimals.getText().toString());
             String birthdate = editTextBirthDate.getText().toString();
+            Farmer farmer = UserManager.getInstance(requireContext()).getFarmer();
+
+            if(animalType.equalsIgnoreCase("ΑΡΝΙΑ") &&
+                    farmer.getAnimalsType().equalsIgnoreCase("ΓΙΔΙΑ")){
+                Toast.makeText(requireContext(), "Δεν μπορείτε να προσθέσετε " + animalType + " ενώ έχετε " + farmer.getAnimalsType()+ "!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if(animalType.equalsIgnoreCase("ΚΑΤΣΙΚΙΑ") &&
+                    farmer.getAnimalsType().equalsIgnoreCase("ΠΡΟΒΑΤΑ")){
+                Toast.makeText(requireContext(), "Δεν μπορείτε να προσθέσετε " + animalType + " ενώ έχετε " + farmer.getAnimalsType()+ "!", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             ArrayList<Animal> bornAnimals = new ArrayList<>();
-
-            if(animalType.equalsIgnoreCase("ΠΡΟΒΑΤΟ")){
+            if(animalType.equalsIgnoreCase("ΑΡΝΙΑ")){
                 for(int i = 0; i < numOfAnimals; i++) {
-                    bornAnimals.add(new Sheep("EL12345", -1, Gender.OTHER, birthdate));
+                    bornAnimals.add(new Sheep(farmer.getFarmerCode(), -1, Gender.OTHER, birthdate));
                 }
             }
-            else{
+            else if(animalType.equalsIgnoreCase("ΚΑΤΣΙΚΙΑ")){
                 for(int i = 0; i < numOfAnimals; i++) {
-                    bornAnimals.add(new Goat("EL12345", -1, Gender.OTHER, birthdate));
+                    bornAnimals.add(new Goat(farmer.getFarmerCode(), -1, Gender.OTHER, birthdate));
                 }
             }
-
 
             new Thread(()->{
-                DatabaseHelper dbHelper = new DatabaseHelper(this.requireContext());
+                DatabaseHelper dbHelper = new DatabaseHelper(requireContext());
                 SQLiteDatabase db = dbHelper.getReadableDatabase();
                 for(int i = 0; i < bornAnimals.size(); i++){
                     dbHelper.addAnimal(bornAnimals.get(i));

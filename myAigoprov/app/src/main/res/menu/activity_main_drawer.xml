@@ -22,12 +22,24 @@
             android:icon="@drawable/ic_add"
             android:title="Προσθήκη Ζώου" />
         <item
-            android:id="@+id/nav_view"
-            android:title="Προβολή Ζώων"/>
-        <item
-            android:id="@+id/nav_add_all_animals"
+            android:id="@+id/nav_add_born_animals"
             android:icon="@drawable/ic_add_all"
             android:title="Μαζική προσθήκη νέων ζώων"/>
-
+        <item
+            android:id="@+id/nav_add_milk"
+            android:icon="@drawable/ic_add_milk"
+            android:title="Προσθήκη γάλακτος"/>
+        <item
+            android:id="@+id/nav_view_animals"
+            android:icon="@drawable/ic_menu_view"
+            android:title="Προβολή ζώων"/>
+        <item
+            android:id="@+id/recycler_view_milk"
+            android:icon="@drawable/ic_menu_view"
+            android:title="Προβολή γάλακτος"/>
+        <item
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/ic_profile"
+            android:title="Προφίλ"/>
     </group>
 </menu>

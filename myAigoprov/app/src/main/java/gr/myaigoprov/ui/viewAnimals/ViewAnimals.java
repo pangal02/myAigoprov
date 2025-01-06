@@ -2,7 +2,6 @@ package gr.myaigoprov.ui.viewAnimals;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Typeface;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -11,25 +10,23 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.google.android.material.tabs.TabLayout;
-
-import java.util.ArrayList;
-import java.util.Collection;
-
 import gr.myaigoprov.R;
 import gr.myaigoprov.database.DatabaseHelper;
+import gr.myaigoprov.manager.UserManager;
+import gr.myaigoprov.model.Farmer;
 
 public class ViewAnimals extends Fragment {
     private DatabaseHelper dbHelper;
+    private RadioGroup radioGroup;
+    private RadioButton rbGoats;
+    private RadioButton rbsheeps;
     private TextView textViewData;
     private ListView listViewAnimals;
 
@@ -41,12 +38,17 @@ public class ViewAnimals extends Fragment {
 //        textViewData = view.findViewById(R.id.textViewData);
 
         // RadioGroup για επιλογή Goats ή Sheeps
-        RadioGroup radioGroup = view.findViewById(R.id.radioGroup);
+        radioGroup = view.findViewById(R.id.radioGroup);
+        rbGoats = view.findViewById(R.id.radioGoats);
+        rbsheeps = view.findViewById(R.id.radioSheeps);
+
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.radioGoats) {
                 displayAnimals("goats");
+
             } else if (checkedId == R.id.radioSheeps) {
                 displayAnimals("sheeps");
+
             }
         });
 
@@ -63,18 +65,18 @@ public class ViewAnimals extends Fragment {
 
         // Δημιουργία επικεφαλίδων για τον πίνακα
         TableRow headerRow = new TableRow(requireContext());
-        String[] headers = {"ID", "Tag", "Gender", "Birthdate"};
+        String[] headers = {"ID", "Ενώτιο", "Γένος", "Ημ/μνία Εισαγ.", "Έχει γεννήσει κάτω του έτους"};
 
         // Προσθήκη επικεφαλίδων με ίδιο padding και layout_weight
         for (String header : headers) {
             TextView textView = new TextView(requireContext());
             textView.setText(header);
-            textView.setPadding(5, 5, 5, 5);
+            textView.setPadding(8, 8, 8, 8);
             textView.setGravity(Gravity.CENTER);
             textView.setTextColor(getResources().getColor(android.R.color.white));
             textView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
 
-            TableRow.LayoutParams params = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1);
+            TableRow.LayoutParams params = new TableRow.LayoutParams(0, TableRow.LayoutParams.MATCH_PARENT, 1);
             textView.setLayoutParams(params);
             headerRow.addView(textView);
         }
@@ -90,8 +92,9 @@ public class ViewAnimals extends Fragment {
             String[] data = {
                     String.valueOf(cursor.getInt(cursor.getColumnIndexOrThrow("id"))),
                     String.valueOf(cursor.getInt(cursor.getColumnIndexOrThrow("tag_number"))),
-                    cursor.getString(cursor.getColumnIndexOrThrow("gender")),
-                    cursor.getString(cursor.getColumnIndexOrThrow("birthdate"))
+                    String.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("gender"))),
+                    String.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("birthdate"))),
+                    String.valueOf(cursor.getInt(cursor.getColumnIndexOrThrow("young_mom")) == 1 ? "" : "ΟΧΙ")
             };
 
             // Προσθήκη των δεδομένων στις στήλες του πίνακα
@@ -113,6 +116,7 @@ public class ViewAnimals extends Fragment {
         // Κλείνουμε τον cursor
         cursor.close();
     }
+
 
 
 }

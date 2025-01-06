@@ -5,20 +5,24 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import gr.myaigoprov.manager.UserManager;
 import gr.myaigoprov.model.Animal;
+import gr.myaigoprov.model.Farmer;
 import gr.myaigoprov.model.Gender;
 import gr.myaigoprov.model.Goat;
+import gr.myaigoprov.model.Milk;
 import gr.myaigoprov.model.Sheep;
 
 import android.content.ContentValues;
 import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
+    private Farmer farmer;
 
     // Όνομα της βάσης δεδομένων
-    private static final String DATABASE_NAME = "animals.db";
+    private static final String DATABASE_NAME = "users.db";
     // Έκδοση της βάσης δεδομένων
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 23;
 
     // Πίνακας για τα Goats
     public static final String TABLE_GOATS = "goats";
@@ -32,38 +36,65 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_BIRTHDATE = "birthdate";
     public static final String COLUMN_YOUNG_MOM = "young_mom";
 
+    // Πίνακας Κατσικίσιου Γάλακτος
+    public static final String TABLE_GOAT_MILK = "goat_milk";
+
+    // Πίνακας Πρόβιου Γάλακτος
+    public static final String TABLE_SHEEP_MILK = "sheep_milk";
+
+    // Στήλες κοινές για Γάλα
+    private static final String COLUMN_DATE = "date";
+    private static final String COLUMN_QUANTITY = "quantity";
+
     // Σχέδιο δημιουργίας πίνακα για τα Goats
     private static final String CREATE_TABLE_GOATS = "CREATE TABLE " + TABLE_GOATS + " ("
             + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + COLUMN_TAG_NUMBER + " INTEGER NOT NULL, "
-            + COLUMN_GENDER + " VARCHAR, "
-            + COLUMN_BIRTHDATE + " VARCHAR, "
+            + COLUMN_GENDER + " VARCHAR NOT NULL, "
+            + COLUMN_BIRTHDATE + " VARCHAR NOT NULL, "
             + COLUMN_YOUNG_MOM + " INTEGER);";
 
     // Σχέδιο δημιουργίας πίνακα για τα Sheeps
     private static final String CREATE_TABLE_SHEEPS = "CREATE TABLE " + TABLE_SHEEPS + " ("
             + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + COLUMN_TAG_NUMBER + " INTEGER, "
-            + COLUMN_GENDER + " VARCHAR, "
-            + COLUMN_BIRTHDATE + " VARCHAR, "
+            + COLUMN_TAG_NUMBER + " INTEGER NOT NULL, "
+            + COLUMN_GENDER + " VARCHAR NOT NULL, "
+            + COLUMN_BIRTHDATE + " VARCHAR NOT NULL, "
             + COLUMN_YOUNG_MOM + " INTEGER);";
+
+    // Σχέδιο δημιουργίας πίνακα για τo κατσικίσιο γάλα
+    private static final String CREATE_TABLE_GOAT_MILK = "CREATE TABLE " + TABLE_GOAT_MILK + " ("
+            + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + COLUMN_DATE + " VARCHAR NOT NULL, "
+            + COLUMN_QUANTITY + " REAL NOT NULL);";
+
+    // Σχέδιο δημιουργίας πίνακα για τo πρόβειο γάλα
+    private static final String CREATE_TABLE_SHEEP_MILK = "CREATE TABLE " + TABLE_SHEEP_MILK + " ("
+            + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + COLUMN_DATE + " VARCHAR NOT NULL, "
+            + COLUMN_QUANTITY + " REAL NOT NULL);";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // Δημιουργία πινάκων
         db.execSQL(CREATE_TABLE_GOATS);
         db.execSQL(CREATE_TABLE_SHEEPS);
+        db.execSQL(CREATE_TABLE_GOAT_MILK);
+        db.execSQL(CREATE_TABLE_SHEEP_MILK);
     }
+
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Αν η βάση δεδομένων αναβαθμιστεί, θα διαγράψουμε τους υπάρχοντες πίνακες και θα τους δημιουργήσουμε ξανά
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_GOATS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SHEEPS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_GOAT_MILK);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SHEEP_MILK);
         onCreate(db);
     }
 
@@ -117,6 +148,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+
+    public long addGoatMilk(Milk milk){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_QUANTITY, milk.getQuantity());
+        values.put(COLUMN_DATE, milk.getDate());
+        return db.insert(TABLE_GOAT_MILK, null, values);
+    }
+
+    public long addSheepMilk(Milk milk){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_QUANTITY, milk.getQuantity());
+        values.put(COLUMN_DATE, milk.getDate());
+        return db.insert(TABLE_SHEEP_MILK, null, values);
+    }
+
+    public boolean deleteDatabase(Context context){
+        return context.deleteDatabase(DATABASE_NAME);
+    }
     public Cursor getAllGoats() {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery("SELECT * FROM " + TABLE_GOATS, null);
@@ -126,6 +177,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery("SELECT * FROM " + TABLE_SHEEPS, null);
     }
+
+    public Cursor getGoatMilkOrderedByLatest() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT * FROM " + TABLE_GOAT_MILK + " ORDER BY " + COLUMN_ID + " DESC", null);
+    }
+
+    public Cursor getSheepMilkOrderedByLatest() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT * FROM " + TABLE_SHEEP_MILK + " ORDER BY " + COLUMN_ID + " DESC", null);
+    }
+
 
     public void printDatabase(SQLiteDatabase db) {
         // Εκτύπωση δεδομένων από τον πίνακα Goats

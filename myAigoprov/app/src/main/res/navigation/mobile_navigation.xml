@@ -30,15 +30,37 @@
         tools:layout="@layout/fragment_add_animal" />
 
     <fragment
-        android:id="@+id/nav_view"
+        android:id="@+id/nav_add_born_animals"
+        android:name="gr.myaigoprov.ui.addBornAnimals.AddBornAnimalsFragment"
+        android:label="Μαζική προσθήκη νέων ζώων"
+        tools:layout="@layout/fragment_add_born_animals"/>
+
+    <fragment
+        android:id="@+id/nav_view_animals"
         android:name="gr.myaigoprov.ui.viewAnimals.ViewAnimals"
         android:label="Προβολη ζώων"
         tools:layout="@layout/fragment_view_animals"/>
 
     <fragment
-        android:id="@+id/nav_add_all_animals"
-        android:name="gr.myaigoprov.ui.addAllAnimals.AddAllAnimalsFragment"
-        android:label="Μαζική προσθήκη νέων ζώων"
-        tools:layout="@layout/fragment_add_all_animals"/>
+        android:id="@+id/recycler_view_milk"
+        android:name="gr.myaigoprov.ui.viewMilk.ViewMilkFragment"
+        android:label="Προβολή γάλακτος"
+        tools:layout="@layout/fragment_view_milk_list"/>
+
+    <fragment
+        android:id="@+id/nav_profile"
+        android:name="gr.myaigoprov.ui.profile.ProfileFragment"
+        android:icon="@drawable/ic_profile"
+        android:label="Προφίλ"
+        tools:layout="@layout/fragment_profile"/>
+
+
+    <fragment
+        android:id="@+id/nav_add_milk"
+        android:name="gr.myaigoprov.ui.addMilk.MilkProductionFragment"
+        android:icon="@drawable/ic_add_milk"
+        android:label="Προσθήκη γάλακτος"
+        tools:layout="@layout/fragment_milk_production"/>
+
 
 </navigation>
