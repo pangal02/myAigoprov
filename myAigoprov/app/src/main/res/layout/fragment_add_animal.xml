@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="Προσθήκη ζώου"
-        android:textColor="@color/black"
+        android:textColor="@color/colorPrimary"
         android:textSize="24sp"
         android:textStyle="bold"  />
 
@@ -76,24 +76,22 @@
         android:layout_height="wrap_content"
         android:text="Ημερομηνία Γέννησης"
         android:layout_marginTop="16dp" />
-    <EditText
-        android:id="@+id/editTextBirthDate"
+    <TextView
+        android:id="@+id/textViewDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Επιλέξτε ημερομηνία"
         android:focusable="false"
-        android:entries="@array/animal_types"
-        android:spinnerMode="dialog"
+        android:hint="Δεν επιλέχθηκε ημερομηνία"
         android:padding="18dp"
-        android:background="@drawable/rounded_edittext"
-        android:textColor="@color/black"
-        android:textSize="16sp"/>
+        android:textSize="16sp"
+        android:textStyle="bold"/>
 
     <Button
         android:id="@+id/buttonSelectDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Επιλογή Ημερομηνίας"
+        android:textColor="@color/white"
         android:backgroundTint="@color/colorAccent"
         android:layout_marginTop="8dp" />
 
@@ -104,5 +102,6 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/primary"
         android:text="Αποθήκευση"
+        android:textColor="@color/white"
         android:layout_marginTop="16dp" />
 </LinearLayout>

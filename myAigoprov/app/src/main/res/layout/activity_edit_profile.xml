@@ -12,12 +12,12 @@
 
         <!-- Title -->
         <TextView
-            android:id="@+id/tvCreateUserTitle"
+            android:id="@+id/tvEditUserTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="24dp"
-            android:text="Δημιουργία χρήστη"
+            android:text="Επεξεργασία χρήστη"
             android:textColor="@color/colorPrimary"
             android:textSize="24sp"
             android:textStyle="bold" />
@@ -32,7 +32,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:hint="π.χ. Παναγιώτης Γαλιώτος"
             android:inputType="textPersonName"
             android:padding="18dp"
             android:background="@drawable/rounded_edittext"
@@ -49,7 +48,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:hint="π.χ. EL12345"
             android:inputType="text"
             android:padding="18dp"
             android:background="@drawable/rounded_edittext"
@@ -78,7 +76,7 @@
             android:layout_height="68dp"
             android:layout_marginTop="24dp"
             android:backgroundTint="@color/primary"
-            android:text="Δημιουργία"
+            android:text="ΑΠΟΘΗΚΕΥΣΗ"
             android:textColor="@color/white"
             android:textStyle="bold" />
 

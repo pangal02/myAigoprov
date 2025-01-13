@@ -26,6 +26,7 @@ public class ProfileFragment extends Fragment {
     private TextView tvFullName;
     private TextView tvFarmerCode;
     private TextView tvAnimalType;
+    private Button btnEditProfile;
     private Button btnDeleteUser;
     private Button btnDeleteDatabase;
 
@@ -45,17 +46,22 @@ public class ProfileFragment extends Fragment {
         tvFullName = rootView.findViewById(R.id.tvFullName);
         tvFarmerCode = rootView.findViewById(R.id.tvFarmerCode);
         tvAnimalType = rootView.findViewById(R.id.tvAnimalType);
+        btnEditProfile = rootView.findViewById(R.id.btnEditUser);
         btnDeleteUser = rootView.findViewById(R.id.btnDeleteUser);
         btnDeleteDatabase = rootView.findViewById(R.id.btnDeleteDatabase);
 
-        // Fetch user details from SharedPreferences
-        Farmer farmer = UserManager.getInstance(requireContext()).getFarmer();
-
         // Display user information
-        tvFullName.setText("Κτηνοτρόφος: " + farmer.getName());
-        tvFarmerCode.setText("Κωδικός: " + farmer.getFarmerCode());
-        tvAnimalType.setText("Τύπος Ζώων: " + farmer.getAnimalsType());
+        Farmer farmer = UserManager.getInstance(requireContext()).getFarmer();
+        setUser(farmer);
 
+        btnEditProfile.setOnClickListener(v ->  {
+                // Ξεκινάει το activity επεξεργασίας χρήστη
+                Intent intent = new Intent(requireContext(), EditProfileActivity.class);
+                intent.putExtra("name", farmer.getName());
+                intent.putExtra("farmerCode",farmer.getFarmerCode());
+                intent.putExtra("animalsType", farmer.getAnimalsType());
+                startActivity(intent);
+        });
         // Delete user button
         btnDeleteUser.setOnClickListener(v -> confirmDeleteUser());
 
@@ -63,6 +69,12 @@ public class ProfileFragment extends Fragment {
         btnDeleteDatabase.setOnClickListener(v -> confirmDeleteDatabase());
 
         return rootView;
+    }
+
+    private void setUser(Farmer farmer){
+        tvFullName.setText("Κτηνοτρόφος: " + farmer.getName());
+        tvFarmerCode.setText("Κωδικός: " + farmer.getFarmerCode());
+        tvAnimalType.setText("Είδος Ζώων: " + farmer.getAnimalsType());
     }
 
     private void deleteUser() {
@@ -85,7 +97,7 @@ public class ProfileFragment extends Fragment {
     }
     private void confirmDeleteUser() {
         new AlertDialog.Builder(requireContext())
-                .setTitle("Διαγραφή Χρήστη")
+                .setTitle("Διαγραφή Χρήστη!")
                 .setMessage("Είστε σίγουροι ότι θέλετε να διαγράψετε τον λογαριασμό; Αν επιλέξετε ΝΑΙ, θα διαγραφούν όλα τα δεδομένα σας. Αυτή η ενέργεια δεν μπορεί να αναιρεθεί.")
                 .setPositiveButton("Ναι", (dialog, which) -> deleteUser())
                 .setNegativeButton("Όχι", null)
@@ -94,7 +106,7 @@ public class ProfileFragment extends Fragment {
 
     private void confirmDeleteDatabase() {
         new AlertDialog.Builder(requireContext())
-                .setTitle("Διαγραφή Βάσης Δεδομένων")
+                .setTitle("Διαγραφή Βάσης Δεδομένων!")
                 .setMessage("Είστε σίγουροι ότι θέλετε να διαγράψετε τη βάση δεδομένων; Αυτή η ενέργεια δεν μπορεί να αναιρεθεί.")
                 .setPositiveButton("ΝΑΙ", (dialog, which) -> deleteDatabase())
                 .setNegativeButton("ΟΧΙ", null)

@@ -1,4 +1,4 @@
-package gr.myaigoprov.ui.addAnimal;
+package gr.myaigoprov.ui.animal;
 
 import android.app.DatePickerDialog;
 import android.database.sqlite.SQLiteDatabase;
@@ -15,13 +15,13 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Calendar;
 
-import gr.myaigoprov.MainActivity;
 import gr.myaigoprov.R;
 
 import gr.myaigoprov.database.*;
@@ -34,7 +34,7 @@ public class AddAnimalFragment extends Fragment {
     private Spinner spinnerAnimalType;
     private Spinner spinnerAnimalGender;
     private EditText editTextTagNumber;
-    private EditText editTextBirthDate;
+    private TextView textBirthDate;
     private Button buttonSelectDate;
     private Button buttonSaveAnimal;
 
@@ -58,7 +58,7 @@ public class AddAnimalFragment extends Fragment {
         spinnerAnimalType = root.findViewById(R.id.spinnerAnimalType);
         spinnerAnimalGender = root.findViewById(R.id.spinnerAnimalGender);
         editTextTagNumber = root.findViewById(R.id.editTextTagNumber);
-        editTextBirthDate = root.findViewById(R.id.editTextBirthDate);
+        textBirthDate = root.findViewById(R.id.textViewDate);
         buttonSelectDate = root.findViewById(R.id.buttonSelectDate);
         buttonSaveAnimal = root.findViewById(R.id.buttonSaveAnimal);
 
@@ -78,7 +78,7 @@ public class AddAnimalFragment extends Fragment {
             String animalType = spinnerAnimalType.getSelectedItem().toString();
             String genderString = spinnerAnimalGender.getSelectedItem().toString();
             String tagNumberString = editTextTagNumber.getText().toString();
-            String birthdate = editTextBirthDate.getText().toString();
+            String birthdate = textBirthDate.getText().toString();
             String farmerCode = UserManager.getInstance(requireContext()).getFarmer().getFarmerCode();
 
             if (tagNumberString.isEmpty() || birthdate.isEmpty()) {
@@ -146,7 +146,7 @@ public class AddAnimalFragment extends Fragment {
                 requireContext(),
                 (view, year1, month1, dayOfMonth) -> {
                     String selectedDate = dayOfMonth + "/" + (month1 + 1) + "/" + year1;
-                    editTextBirthDate.setText(selectedDate);
+                    textBirthDate.setText(selectedDate);
                 },
                 year, month, day
         );

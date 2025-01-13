@@ -11,28 +11,17 @@
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" />
 
-    <fragment
-        android:id="@+id/nav_gallery"
-        android:name="gr.myaigoprov.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
-
-    <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="gr.myaigoprov.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
 
     <fragment
         android:id="@+id/nav_add_animal"
-        android:name="gr.myaigoprov.ui.addAnimal.AddAnimalFragment"
+        android:name="gr.myaigoprov.ui.animal.AddAnimalFragment"
         android:label="Προσθήκη ζώου"
         tools:layout="@layout/fragment_add_animal" />
 
     <fragment
         android:id="@+id/nav_add_born_animals"
-        android:name="gr.myaigoprov.ui.addBornAnimals.AddBornAnimalsFragment"
-        android:label="Μαζική προσθήκη νέων ζώων"
+        android:name="gr.myaigoprov.ui.animal.AddBornAnimalsFragment"
+        android:label="Γέννηση ζώων"
         tools:layout="@layout/fragment_add_born_animals"/>
 
     <fragment
@@ -42,10 +31,10 @@
         tools:layout="@layout/fragment_view_animals"/>
 
     <fragment
-        android:id="@+id/recycler_view_milk"
-        android:name="gr.myaigoprov.ui.viewMilk.ViewMilkFragment"
+        android:id="@+id/view_milk"
+        android:name="gr.myaigoprov.ui.milk.MilkFragment"
         android:label="Προβολή γάλακτος"
-        tools:layout="@layout/fragment_view_milk_list"/>
+        tools:layout="@layout/fragment_milk"/>
 
     <fragment
         android:id="@+id/nav_profile"
@@ -57,10 +46,16 @@
 
     <fragment
         android:id="@+id/nav_add_milk"
-        android:name="gr.myaigoprov.ui.addMilk.MilkProductionFragment"
+        android:name="gr.myaigoprov.ui.milk.MilkProductionFragment"
         android:icon="@drawable/ic_add_milk"
         android:label="Προσθήκη γάλακτος"
         tools:layout="@layout/fragment_milk_production"/>
+
+    <fragment
+        android:id="@+id/exit_born_animals"
+        android:name="gr.myaigoprov.ui.animal.ExitBornAnimal"
+        android:label="Έξωδος γεννημένων ζώων"
+        tools:layout="@layout/fragment_exit_animal"/>
 
 
 </navigation>

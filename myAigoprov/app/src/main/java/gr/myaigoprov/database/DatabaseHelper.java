@@ -22,12 +22,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Όνομα της βάσης δεδομένων
     private static final String DATABASE_NAME = "users.db";
     // Έκδοση της βάσης δεδομένων
-    private static final int DATABASE_VERSION = 23;
+    private static final int DATABASE_VERSION = 6;
 
     // Πίνακας για τα Goats
-    public static final String TABLE_GOATS = "goats";
+    public static final String TABLE_GOATS = "Goats";
     // Πίνακας για τα Sheeps
-    public static final String TABLE_SHEEPS = "sheeps";
+    public static final String TABLE_SHEEPS = "Sheeps";
 
     // Στήλες κοινές για Goats και Sheeps
     public static final String COLUMN_ID = "id";
@@ -36,15 +36,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_BIRTHDATE = "birthdate";
     public static final String COLUMN_YOUNG_MOM = "young_mom";
 
+    //Πίνακας για τα ζωα που εχουν φυγει
+    public static final String TABLE_REMOVED = "Removed";
+    public static final String COLUMN_ANIMAL_TYPE = "animal_type";
+    public static final String COLUMN_EXIT_TYPE = "exit_type";
+
     // Πίνακας Κατσικίσιου Γάλακτος
-    public static final String TABLE_GOAT_MILK = "goat_milk";
+    public static final String TABLE_GOAT_MILK = "Goat_Milk";
 
     // Πίνακας Πρόβιου Γάλακτος
-    public static final String TABLE_SHEEP_MILK = "sheep_milk";
+    public static final String TABLE_SHEEP_MILK = "Sheep_Milk";
 
     // Στήλες κοινές για Γάλα
-    private static final String COLUMN_DATE = "date";
-    private static final String COLUMN_QUANTITY = "quantity";
+    public static final String COLUMN_DATE = "date";
+    public static final String COLUMN_QUANTITY = "quantity";
+    private static final String COLUMN_COUNT_ANIMALS_MILK = "count_animals";
 
     // Σχέδιο δημιουργίας πίνακα για τα Goats
     private static final String CREATE_TABLE_GOATS = "CREATE TABLE " + TABLE_GOATS + " ("
@@ -62,17 +68,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + COLUMN_BIRTHDATE + " VARCHAR NOT NULL, "
             + COLUMN_YOUNG_MOM + " INTEGER);";
 
+    // Σχέδιο δημιουργίας πίνακα για τα ζώα που εχουν φυγει
+    private static final String CREATE_TABLE_REMOVED = "CREATE TABLE " + TABLE_REMOVED + " ("
+            + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + COLUMN_TAG_NUMBER + " INTEGER NOT NULL, "
+            + COLUMN_GENDER + " VARCHAR NOT NULL, "
+            + COLUMN_BIRTHDATE + " VARCHAR NOT NULL, "
+            + COLUMN_YOUNG_MOM + " INTEGER, "
+            + COLUMN_EXIT_TYPE + " VARCHAR);";
+
     // Σχέδιο δημιουργίας πίνακα για τo κατσικίσιο γάλα
     private static final String CREATE_TABLE_GOAT_MILK = "CREATE TABLE " + TABLE_GOAT_MILK + " ("
             + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + COLUMN_ANIMAL_TYPE + " VARCHAR NOT NULL, "
             + COLUMN_DATE + " VARCHAR NOT NULL, "
-            + COLUMN_QUANTITY + " REAL NOT NULL);";
+            + COLUMN_QUANTITY + " REAL NOT NULL, "
+            + COLUMN_COUNT_ANIMALS_MILK + " INTEGER NOT NULL);";
 
     // Σχέδιο δημιουργίας πίνακα για τo πρόβειο γάλα
     private static final String CREATE_TABLE_SHEEP_MILK = "CREATE TABLE " + TABLE_SHEEP_MILK + " ("
             + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + COLUMN_DATE + " VARCHAR NOT NULL, "
-            + COLUMN_QUANTITY + " REAL NOT NULL);";
+            + COLUMN_QUANTITY + " REAL NOT NULL, "
+            + COLUMN_COUNT_ANIMALS_MILK + " INTEGER NOT NULL);";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -83,6 +101,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_GOATS);
         db.execSQL(CREATE_TABLE_SHEEPS);
+        db.execSQL(CREATE_TABLE_REMOVED);
         db.execSQL(CREATE_TABLE_GOAT_MILK);
         db.execSQL(CREATE_TABLE_SHEEP_MILK);
     }
@@ -93,6 +112,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // Αν η βάση δεδομένων αναβαθμιστεί, θα διαγράψουμε τους υπάρχοντες πίνακες και θα τους δημιουργήσουμε ξανά
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_GOATS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SHEEPS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_REMOVED);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_GOAT_MILK);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SHEEP_MILK);
         onCreate(db);
@@ -149,19 +169,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public long addGoatMilk(Milk milk){
+    public long addGoatMilk(Milk milk, int count){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_QUANTITY, milk.getQuantity());
         values.put(COLUMN_DATE, milk.getDate());
+        values.put(COLUMN_COUNT_ANIMALS_MILK, count);
         return db.insert(TABLE_GOAT_MILK, null, values);
     }
 
-    public long addSheepMilk(Milk milk){
+    public long addSheepMilk(Milk milk, int count){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_QUANTITY, milk.getQuantity());
         values.put(COLUMN_DATE, milk.getDate());
+        values.put(COLUMN_COUNT_ANIMALS_MILK, count);
         return db.insert(TABLE_SHEEP_MILK, null, values);
     }
 
@@ -178,6 +200,50 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.rawQuery("SELECT * FROM " + TABLE_SHEEPS, null);
     }
 
+    public Cursor getBornGoats(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT * FROM " + TABLE_GOATS + " WHERE " + COLUMN_TAG_NUMBER + " = -1", null);
+    }
+
+    public Cursor getBornSheeps(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT * FROM " + TABLE_SHEEPS + " WHERE " + COLUMN_TAG_NUMBER + " = -1", null);
+    }
+
+
+    public int getCountBornGoats(){
+        int count = 0;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor =  getBornGoats();
+
+        if(cursor != null){
+            while (cursor.moveToNext()){
+                count++;
+            }
+            cursor.close();
+        }
+
+        db.close();
+        return count;
+    }
+
+    public int getCountBornSheeps(){
+        int count = 0;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor =  getBornSheeps();
+
+        if(cursor != null){
+            while (cursor.moveToNext()){
+                count++;
+            }
+            cursor.close();
+        }
+        db.close();
+        return count;
+    }
+
+
+
     public Cursor getGoatMilkOrderedByLatest() {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery("SELECT * FROM " + TABLE_GOAT_MILK + " ORDER BY " + COLUMN_ID + " DESC", null);
@@ -188,6 +254,113 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.rawQuery("SELECT * FROM " + TABLE_SHEEP_MILK + " ORDER BY " + COLUMN_ID + " DESC", null);
     }
 
+
+    public long setAsRemoved(Animal animal, String exitType){
+        long result = -2; // Return id of the row, if return -1 animal has not inserted
+        if(animal instanceof Goat){
+            Goat goat = (Goat) animal;
+            SQLiteDatabase db = this.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_TAG_NUMBER, goat.getTagNumber());
+            values.put(COLUMN_ANIMAL_TYPE, "GOAT");
+            if(goat.getGender() == Gender.MALE){
+                values.put(COLUMN_GENDER, "ΤΡΑΓΟΣ");
+            }
+            else if(goat.getGender() == Gender.FEMALE){
+                values.put(COLUMN_GENDER, "ΓΙΔΑ");
+            }
+            else if(goat.getGender() == Gender.OTHER){
+                values.put(COLUMN_GENDER, "ΑΛΛΟ");
+            }
+            values.put(COLUMN_BIRTHDATE, goat.getBirthdate());
+            if(goat.isYoungMom()){
+                values.put(COLUMN_YOUNG_MOM, 1);
+            }
+            else{
+                values.put(COLUMN_YOUNG_MOM, 0);
+            }
+            values.put(COLUMN_EXIT_TYPE, exitType);
+            result =  db.insert(TABLE_REMOVED, null, values);
+        }
+        else {
+            Sheep sheep = (Sheep) animal;
+            SQLiteDatabase db = this.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_TAG_NUMBER, sheep.getTagNumber());
+            values.put(COLUMN_ANIMAL_TYPE, "SHEEP");
+            if(sheep.getGender() == Gender.MALE){
+                values.put(COLUMN_GENDER, "ΚΡΙΑΡΙ");
+            }
+            else if(sheep.getGender() == Gender.FEMALE){
+                values.put(COLUMN_GENDER, "ΠΡΟΒΑΤΙΝΑ");
+            }
+            else if(sheep.getGender() == Gender.OTHER){
+                values.put(COLUMN_GENDER, "ΑΛΛΟ");
+            }
+            values.put(COLUMN_BIRTHDATE, sheep.getBirthdate());
+            if(animal.isYoungMom()){
+                values.put(COLUMN_YOUNG_MOM, 1);
+            }
+            else{
+                values.put(COLUMN_YOUNG_MOM, 0);
+            }
+            values.put(COLUMN_EXIT_TYPE, exitType);
+            result =  db.insert(TABLE_REMOVED, null, values);
+        }
+        return result;
+    }
+
+    public void removedAnimal(Animal animal, String exitType){
+        String insertQuery;
+        String updateQuery;
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        if(animal instanceof Goat) {
+            insertQuery = "INSERT INTO " + TABLE_REMOVED + " ( "
+                    + COLUMN_ID + ", "
+                    + COLUMN_TAG_NUMBER + ", "
+                    + COLUMN_GENDER + ", "
+                    + COLUMN_BIRTHDATE + ", "
+                    + COLUMN_YOUNG_MOM + ") " + "SELECT * FROM " + TABLE_GOATS + " WHERE " + COLUMN_ID + " = " + animal.getId();
+
+
+            updateQuery = "UPDATE " + TABLE_REMOVED + " SET "
+                    + COLUMN_EXIT_TYPE + " AS " + exitType;
+
+        }
+        else{
+            insertQuery = "INSERT INTO " + TABLE_REMOVED + " ( "
+                    + COLUMN_ID + ", "
+                    + COLUMN_TAG_NUMBER + ", "
+                    + COLUMN_GENDER + ", "
+                    + COLUMN_BIRTHDATE + ", "
+                    + COLUMN_YOUNG_MOM + ") " + "SELECT * FROM " + TABLE_SHEEPS + " WHERE " + COLUMN_ID + " = " + animal.getId();
+
+
+            updateQuery = "UPDATE " + TABLE_REMOVED + " SET "
+                    + COLUMN_EXIT_TYPE + " AS " + exitType;
+        }
+        db.execSQL(insertQuery);
+        db.execSQL(updateQuery);
+    }
+    public int deleteAnimal(Animal animal){
+        // Επιστρέφει ο πλήθος των γραμμών που διαγράφηκαν από τον πίνακα.
+        int rowsDeleted = -1;
+        SQLiteDatabase db = this.getReadableDatabase();
+        if(animal instanceof Goat){
+            Goat goat = (Goat) animal;
+            int id = goat.getId();
+            String deleteQuery = "DELETE FROM " + TABLE_GOATS + " WHERE " + COLUMN_ID + " = " + id;
+            rowsDeleted = db.delete(TABLE_GOATS, COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
+        }
+        else{
+            Sheep sheep = (Sheep) animal;
+            int id = sheep.getId();
+            String deleteQuery = "DELETE FROM " + TABLE_SHEEPS + " WHERE " + COLUMN_ID + " = " + id;
+            rowsDeleted = db.delete(TABLE_SHEEPS, COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
+        }
+        return rowsDeleted;
+    }
 
     public void printDatabase(SQLiteDatabase db) {
         // Εκτύπωση δεδομένων από τον πίνακα Goats

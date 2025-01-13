@@ -29,19 +29,29 @@
         android:id="@+id/tvAnimalType"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Τύπος Ζώων: [Τύπος]"
+        android:text="Είδος Ζώων: [Είδος]"
         android:textSize="18sp"
         android:layout_marginBottom="32dp"
         android:textStyle="bold"/>
 
+    <!-- Κουμπί για επεξεργασία -->
+    <Button
+        android:id="@+id/btnEditUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorAccent"
+        android:text="ΕΠΕΞΕΡΓΑΣΙΑ ΧΡΗΣΤΗ"
+        android:textColor="@color/white"/>
     <!-- Κουμπιά για διαγραφή -->
 
     <Button
         android:id="@+id/btnDeleteDatabase"
+        android:layout_marginTop="100dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@android:color/holo_red_dark"
-        android:text="Διαγραφή Βάσης Δεδομένων" />
+        android:text="Διαγραφή Βάσης Δεδομένων"
+        android:textColor="@color/white"/>
 
     <Button
         android:id="@+id/btnDeleteUser"
@@ -49,6 +59,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:backgroundTint="@android:color/holo_red_dark"
-        android:text="Διαγραφή Χρήστη" />
+        android:text="Διαγραφή Χρήστη"
+        android:textColor="@color/white"/>
 
 </LinearLayout>

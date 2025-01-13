@@ -6,6 +6,7 @@ import androidx.room.TypeConverters;
 
 
 public abstract class Animal{
+    private int id;
     private String farmerCode;
     private int tagNumber;
     private Gender gender;
@@ -13,6 +14,7 @@ public abstract class Animal{
     private String  birthdate;
 
     public Animal(String farmerCode, int tagNumber, Gender gender, String birthdate) {
+        this.id = -2;
         this.farmerCode = farmerCode;
         this.tagNumber = tagNumber;
         this.gender = gender;
@@ -20,6 +22,19 @@ public abstract class Animal{
         this.youngMom = false;
     }
 
+
+    public int getId(){
+        return id;
+    }
+    public void setId(int newId){
+        if(newId > 0){
+            this.id = newId;
+        }
+        else {
+            throw new IllegalArgumentException("Μη αποδεκτή τιμή ID για το ζώω: " + tagNumber + "! Μόνο ακέραιες θετικές τιμές!");
+        }
+
+    }
     public String getFarmerCode() {
         return farmerCode;
     }

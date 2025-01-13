@@ -2,11 +2,13 @@ package gr.myaigoprov.model;
 
 public class Milk {
     private double quantity;
-    private String date;
+    private final String date;
+//    private int image;
 
     public Milk(double quantity, String date){
-        setQuantity(quantity);
-        setDate(date);
+        this.quantity = quantity;
+        this.date = date;
+//        this.image = image;
     }
 
     public double getQuantity(){
@@ -24,15 +26,19 @@ public class Milk {
     public String getDate(){
         return date;
     }
-    public void setDate(String newDate){
-        newDate = newDate.trim();
-        if(newDate.isEmpty() || newDate == null){
-            throw new IllegalArgumentException("Δεν μπορεί η ημερομηνία να είναι κενή");
-        }
-        else{
-            this.date = date;
-        }
-    }
+
+//    public void setDate(String newDate){
+//        if(newDate.isEmpty() || newDate == null){
+//            throw new IllegalArgumentException("Δεν μπορεί η ημερομηνία να είναι κενή");
+//        }
+//        else{
+//            this.date = date;
+//        }
+//    }
+
+//    public int getImage() {
+//        return image;
+//    }
 
     @Override
     public String toString(){

@@ -12,15 +12,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyAigoprov"
         tools:targetApi="31">
+        <activity
+            android:name=".ui.profile.EditProfileActivity"
+            android:exported="false" />
+        <activity android:name=".ui.milk.DetailedActivity">
 
-        <!-- Δημιουργία του CreateUserActivity -->
+        </activity>
         <activity
             android:name=".ui.createUser.CreateUserActivity"
             android:exported="false"
             android:label="@string/title_activity_create_user"
-            android:theme="@style/Theme.MyAigoprov" />
-
-        <!-- Δημιουργία του MainActivity με τον Intent Filter για την αρχική οθόνη -->
+            android:theme="@style/Theme.MyAigoprov" /> <!-- Δημιουργία του MainActivity με τον Intent Filter για την αρχική οθόνη -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -28,13 +30,11 @@
             android:theme="@style/Theme.MyAigoprov.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <!-- Δημιουργία του WelcomeActivity -->
+        </activity> <!-- Δημιουργία του WelcomeActivity -->
         <activity android:name=".ui.welcomeUser.WelcomeActivity" />
-
     </application>
 
 </manifest>

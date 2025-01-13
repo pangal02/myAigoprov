@@ -4,6 +4,5 @@
     android:layout_height="wrap_content"
     android:padding="8dp"
     android:textSize="16sp"
-    android:textColor="@color/black"
     android:background="?attr/selectableItemBackground"
     android:gravity="center_vertical" />

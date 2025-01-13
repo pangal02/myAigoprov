@@ -34,6 +34,12 @@
             android:layout_marginBottom="16dp"/>
 
         <!-- Αριθμός Ζώων -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="Αριθμός Ζώων"
+            android:textSize="16sp"/>
         <EditText
             android:id="@+id/etAnimalCount"
             android:layout_width="match_parent"
@@ -42,6 +48,23 @@
             android:hint="Αριθμός Ζώων"
             android:padding="18dp"
             android:background="@drawable/rounded_edittext"
+            android:textSize="16sp"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="Τύπος εξώδου"
+            android:textSize="16sp"/>
+        <Spinner
+            android:id="@+id/spinnerExitType"
+            android:layout_width="match_parent"
+            android:layout_height="63dp"
+            android:spinnerMode="dialog"
+            android:padding="18dp"
+            android:background="@drawable/rounded_edittext"
+            android:textColor="@color/black"
             android:textSize="16sp"
             android:layout_marginBottom="16dp"/>
 
@@ -70,8 +93,8 @@
             android:layout_width="match_parent"
             android:layout_height="68dp"
             android:layout_marginTop="16dp"
-            android:backgroundTint="@color/primary"
-            android:text="Αποθήκευση"
+            android:backgroundTint="@android:color/holo_red_light"
+            android:text="ΕΞΩΔΟΣ ΖΩΩΝ"
             android:textColor="@color/white" />
 
     </LinearLayout>

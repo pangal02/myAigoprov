@@ -40,6 +40,12 @@
         <item>ΠΡΟΒΑΤΑ</item>
         <item>ΑΙΓΟΠΡΟΒΑΤΑ</item>
     </string-array>
+
+    <string-array name="exit_types">
+        <item>ΣΦΑΓΗ</item>
+        <item>ΑΠΩΛΕΙΑ</item>
+        <item>ΠΩΛΗΣΗ</item>
+    </string-array>
     <string name="title_activity_create_user">CreateUserActivity</string>
 
 

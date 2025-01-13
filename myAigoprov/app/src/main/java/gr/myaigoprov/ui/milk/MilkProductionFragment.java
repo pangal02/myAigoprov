@@ -1,7 +1,9 @@
-package gr.myaigoprov.ui.addMilk;
+package gr.myaigoprov.ui.milk;
 
 import android.app.DatePickerDialog;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,10 +30,11 @@ public class MilkProductionFragment extends Fragment {
 
     private Spinner spinnerMilkType;
     private EditText editTextQuantity;
-    private TextView textViewSelectedDate;
+    private TextView textSelectedDate;
+    private EditText editTextCountAnimals;
     private Button buttonSelectDate, buttonSave;
-    private String selectedMilkType;
-    private String selectedDate;
+    private String selectedMilkType, selectedDate;
+    private int savedCountAnimals = 0;
 
     @Nullable
     @Override
@@ -41,10 +44,12 @@ public class MilkProductionFragment extends Fragment {
 
         spinnerMilkType = rootView.findViewById(R.id.spinnerMilkType);
         editTextQuantity = rootView.findViewById(R.id.editTextQuantity);
-        textViewSelectedDate = rootView.findViewById(R.id.textViewSelectedDate);
+        textSelectedDate = rootView.findViewById(R.id.textViewDate);
+        editTextCountAnimals = rootView.findViewById(R.id.editTextAnimalCount);
         buttonSelectDate = rootView.findViewById(R.id.buttonSelectDate);
         buttonSave = rootView.findViewById(R.id.buttonSave);
 
+        loadLastEntry();
         // Handle spinner selection
         spinnerMilkType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -67,24 +72,31 @@ public class MilkProductionFragment extends Fragment {
         return rootView;
     }
 
+
+
     private void showDatePicker() {
-        Calendar calendar = Calendar.getInstance();
+        final Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(), (view, year1, month1, dayOfMonth) -> {
-            selectedDate = dayOfMonth + "/" + (month1 + 1) + "/" + year1;
-            textViewSelectedDate.setText(selectedDate);
-        }, year, month, day);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                requireContext(),
+                (view, year1, month1, dayOfMonth) -> {
+                    selectedDate = dayOfMonth + "/" + (month1 + 1) + "/" + year1;
+                    textSelectedDate.setText(selectedDate);
+                },
+                year, month, day
+        );
         datePickerDialog.show();
     }
 
     private void saveMilkProduction() {
         Farmer farmer = UserManager.getInstance(requireContext()).getFarmer();
         String quantityStr = editTextQuantity.getText().toString();
+        String count = editTextCountAnimals.getText().toString();
 
-        if (selectedMilkType == null || quantityStr.isEmpty() || selectedDate == null) {
+        if (selectedMilkType == null || quantityStr.isEmpty() || selectedDate == null || count.isEmpty() || count == null) {
             Toast.makeText(requireContext(), "Παρακαλώ συμπληρώστε όλα τα πεδία!", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -100,16 +112,41 @@ public class MilkProductionFragment extends Fragment {
         }
 
         double quantity = Double.parseDouble(quantityStr);
+        String date = textSelectedDate.getText().toString();
+        int countAnimals = Integer.parseInt(count);
 
-        Milk milk = new Milk(quantity, selectedDate);
-        DatabaseHelper dbHelper = new DatabaseHelper(requireContext());
+        Milk milk;
         if(selectedMilkType.equalsIgnoreCase("ΚΑΤΣΙΚΙΣΙΟ")){
-            dbHelper.addGoatMilk(milk);
+            milk = new Milk(quantity, date);
         }
         else{
-            dbHelper.addSheepMilk(milk);
+            milk = new Milk(quantity, date);
         }
-        // Save milk production (logic to be implemented with database)
-        Toast.makeText(requireContext(), "Η παραγωγή αποθηκεύτηκε!", Toast.LENGTH_SHORT).show();
+        DatabaseHelper dbHelper = new DatabaseHelper(requireContext());
+        if(selectedMilkType.equalsIgnoreCase("ΚΑΤΣΙΚΙΣΙΟ")){
+            long id = dbHelper.addGoatMilk(milk, countAnimals);
+            if (id != -1) {
+                Log.d("Database", "Επιτυχής προσθήκη εγγραφής με ID: " + id + ", date: " + date + ", Quantity: " + quantity);
+                Toast.makeText(requireContext(), "Η παραγωγή αποθηκεύτηκε!", Toast.LENGTH_SHORT).show();
+            } else {
+                Log.e("Database", "Αποτυχία προσθήκης εγγραφής!");
+                Toast.makeText(requireContext(), "Προέκυψε σφάλμα! Ελέγξτε τα δεδομένα σας και προσπαθήστε ξανά.", Toast.LENGTH_LONG).show();
+            }
+        }
+        else{
+            dbHelper.addSheepMilk(milk, countAnimals);
+        }
+        dbHelper.close();
     }
+
+    private void loadLastEntry() {
+        DatabaseHelper dbHelper = new DatabaseHelper(requireContext());
+        Cursor cursor = dbHelper.getGoatMilkOrderedByLatest();
+        if (cursor.moveToFirst()) {
+            int animalCount = cursor.getInt(cursor.getColumnIndexOrThrow("count_animals"));
+            editTextCountAnimals.setText(String.valueOf(animalCount));
+        }
+        cursor.close();
+    }
+
 }

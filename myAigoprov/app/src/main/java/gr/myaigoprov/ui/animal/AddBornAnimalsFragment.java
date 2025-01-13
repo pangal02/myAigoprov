@@ -1,4 +1,4 @@
-package gr.myaigoprov.ui.addBornAnimals;
+package gr.myaigoprov.ui.animal;
 
 import android.app.DatePickerDialog;
 import android.database.sqlite.SQLiteDatabase;
@@ -15,6 +15,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextClock;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -33,7 +35,7 @@ public class AddBornAnimalsFragment extends Fragment {
     private Spinner spinnerAnimalType;
     private EditText strNumOfAnimals;
     private Button selectDateButton;
-    private EditText editTextBirthDate;
+    private TextView textViewBirthDate;
     private Button saveButton;
 
 
@@ -56,7 +58,7 @@ public class AddBornAnimalsFragment extends Fragment {
         spinnerAnimalType = root.findViewById(R.id.spinnerAnimalType);
         strNumOfAnimals = root.findViewById(R.id.etAnimalCount);
         selectDateButton = root.findViewById(R.id.btnSelectDate);
-        editTextBirthDate = root.findViewById(R.id.editTextBirthDate);
+        textViewBirthDate = root.findViewById(R.id.textViewDate);
         saveButton = root.findViewById(R.id.btnSave);
 
         // Ρύθμιση επιλογών για το Spinner
@@ -68,8 +70,8 @@ public class AddBornAnimalsFragment extends Fragment {
 
         saveButton.setOnClickListener(v -> {
             String animalType = spinnerAnimalType.getSelectedItem().toString();
-            int numOfAnimals = Integer.parseInt(strNumOfAnimals.getText().toString());
-            String birthdate = editTextBirthDate.getText().toString();
+            String birthdate = textViewBirthDate.getText().toString();
+            String strNumberAnimals = strNumOfAnimals.getText().toString();
             Farmer farmer = UserManager.getInstance(requireContext()).getFarmer();
 
             if(animalType.equalsIgnoreCase("ΑΡΝΙΑ") &&
@@ -82,6 +84,17 @@ public class AddBornAnimalsFragment extends Fragment {
                 Toast.makeText(requireContext(), "Δεν μπορείτε να προσθέσετε " + animalType + " ενώ έχετε " + farmer.getAnimalsType()+ "!", Toast.LENGTH_SHORT).show();
                 return;
             }
+
+            if(strNumberAnimals.isEmpty() || strNumberAnimals == null){
+                strNumOfAnimals.setError("Δεν μπορεί να είναι κενό");
+                return;
+            }
+
+            if(birthdate.isEmpty() || birthdate == null){
+                textViewBirthDate.setError("Δεν μπορεί να είναι κενό");
+                return;
+            }
+            int numOfAnimals = Integer.parseInt(strNumberAnimals);
 
             ArrayList<Animal> bornAnimals = new ArrayList<>();
             if(animalType.equalsIgnoreCase("ΑΡΝΙΑ")){
@@ -121,7 +134,7 @@ public class AddBornAnimalsFragment extends Fragment {
                 requireContext(),
                 (view, year1, month1, dayOfMonth) -> {
                     String selectedDate = dayOfMonth + "/" + (month1 + 1) + "/" + year1;
-                    editTextBirthDate.setText(selectedDate);
+                    textViewBirthDate.setText(selectedDate);
                 },
                 year, month, day
         );
