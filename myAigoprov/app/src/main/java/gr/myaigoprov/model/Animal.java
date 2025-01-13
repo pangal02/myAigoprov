@@ -1,10 +1,5 @@
 package gr.myaigoprov.model;
 
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
-import androidx.room.TypeConverters;
-
-
 public abstract class Animal{
     private int id;
     private String farmerCode;
@@ -14,7 +9,6 @@ public abstract class Animal{
     private String  birthdate;
 
     public Animal(String farmerCode, int tagNumber, Gender gender, String birthdate) {
-        this.id = -2;
         this.farmerCode = farmerCode;
         this.tagNumber = tagNumber;
         this.gender = gender;
@@ -22,12 +16,21 @@ public abstract class Animal{
         this.youngMom = false;
     }
 
+    public Animal(int id, String farmerCode, int tagNumber, Gender gender, String birthdate) {
+        this.id = id;
+        this.farmerCode = farmerCode;
+        this.tagNumber = tagNumber;
+        this.gender = gender;
+        this.birthdate = birthdate;
+        this.youngMom = false;
+    }
 
     public int getId(){
         return id;
     }
+
     public void setId(int newId){
-        if(newId > 0){
+        if(newId > -1){
             this.id = newId;
         }
         else {
@@ -76,4 +79,10 @@ public abstract class Animal{
         this.birthdate = birthdate;
     }
 
+    @Override
+    public String toString(){
+        String result = "{TAG: " + tagNumber + ", fCode: " + farmerCode + ", Gender: " + gender
+                + ", birthdate: " + birthdate  + "}";
+        return result;
+    }
 }

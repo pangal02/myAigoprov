@@ -5,8 +5,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import gr.myaigoprov.manager.UserManager;
 import gr.myaigoprov.model.Animal;
+import gr.myaigoprov.model.DeletedAnimal;
 import gr.myaigoprov.model.Farmer;
 import gr.myaigoprov.model.Gender;
 import gr.myaigoprov.model.Goat;
@@ -22,7 +22,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Όνομα της βάσης δεδομένων
     private static final String DATABASE_NAME = "users.db";
     // Έκδοση της βάσης δεδομένων
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 9;
 
     // Πίνακας για τα Goats
     public static final String TABLE_GOATS = "Goats";
@@ -70,7 +70,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Σχέδιο δημιουργίας πίνακα για τα ζώα που εχουν φυγει
     private static final String CREATE_TABLE_REMOVED = "CREATE TABLE " + TABLE_REMOVED + " ("
-            + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + COLUMN_ID + " INTEGER PRIMARY KEY, "
+            + COLUMN_ANIMAL_TYPE + " VARCHAR NOT NULL, "
             + COLUMN_TAG_NUMBER + " INTEGER NOT NULL, "
             + COLUMN_GENDER + " VARCHAR NOT NULL, "
             + COLUMN_BIRTHDATE + " VARCHAR NOT NULL, "
@@ -255,25 +256,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public long setAsRemoved(Animal animal, String exitType){
+    public long setAsRemoved(DeletedAnimal animal, String exitType){
         long result = -2; // Return id of the row, if return -1 animal has not inserted
-        if(animal instanceof Goat){
-            Goat goat = (Goat) animal;
+
             SQLiteDatabase db = this.getWritableDatabase();
             ContentValues values = new ContentValues();
-            values.put(COLUMN_TAG_NUMBER, goat.getTagNumber());
-            values.put(COLUMN_ANIMAL_TYPE, "GOAT");
-            if(goat.getGender() == Gender.MALE){
+            values.put(COLUMN_ID, animal.getAnimal().getId());
+            values.put(COLUMN_TAG_NUMBER, animal.getAnimal().getTagNumber());
+            values.put(COLUMN_ANIMAL_TYPE, animal.getAnimalType());
+            if(animal.getAnimal().getGender() == Gender.MALE){
                 values.put(COLUMN_GENDER, "ΤΡΑΓΟΣ");
             }
-            else if(goat.getGender() == Gender.FEMALE){
+            else if(animal.getAnimal().getGender() == Gender.FEMALE){
                 values.put(COLUMN_GENDER, "ΓΙΔΑ");
             }
-            else if(goat.getGender() == Gender.OTHER){
+            else if(animal.getAnimal().getGender() == Gender.OTHER){
                 values.put(COLUMN_GENDER, "ΑΛΛΟ");
             }
-            values.put(COLUMN_BIRTHDATE, goat.getBirthdate());
-            if(goat.isYoungMom()){
+            values.put(COLUMN_BIRTHDATE, animal.getAnimal().getBirthdate());
+            if(animal.getAnimal().isYoungMom()){
                 values.put(COLUMN_YOUNG_MOM, 1);
             }
             else{
@@ -281,68 +282,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
             values.put(COLUMN_EXIT_TYPE, exitType);
             result =  db.insert(TABLE_REMOVED, null, values);
-        }
-        else {
-            Sheep sheep = (Sheep) animal;
-            SQLiteDatabase db = this.getWritableDatabase();
-            ContentValues values = new ContentValues();
-            values.put(COLUMN_TAG_NUMBER, sheep.getTagNumber());
-            values.put(COLUMN_ANIMAL_TYPE, "SHEEP");
-            if(sheep.getGender() == Gender.MALE){
-                values.put(COLUMN_GENDER, "ΚΡΙΑΡΙ");
-            }
-            else if(sheep.getGender() == Gender.FEMALE){
-                values.put(COLUMN_GENDER, "ΠΡΟΒΑΤΙΝΑ");
-            }
-            else if(sheep.getGender() == Gender.OTHER){
-                values.put(COLUMN_GENDER, "ΑΛΛΟ");
-            }
-            values.put(COLUMN_BIRTHDATE, sheep.getBirthdate());
-            if(animal.isYoungMom()){
-                values.put(COLUMN_YOUNG_MOM, 1);
-            }
-            else{
-                values.put(COLUMN_YOUNG_MOM, 0);
-            }
-            values.put(COLUMN_EXIT_TYPE, exitType);
-            result =  db.insert(TABLE_REMOVED, null, values);
-        }
+
         return result;
     }
 
-    public void removedAnimal(Animal animal, String exitType){
-        String insertQuery;
-        String updateQuery;
-        SQLiteDatabase db = this.getWritableDatabase();
 
-        if(animal instanceof Goat) {
-            insertQuery = "INSERT INTO " + TABLE_REMOVED + " ( "
-                    + COLUMN_ID + ", "
-                    + COLUMN_TAG_NUMBER + ", "
-                    + COLUMN_GENDER + ", "
-                    + COLUMN_BIRTHDATE + ", "
-                    + COLUMN_YOUNG_MOM + ") " + "SELECT * FROM " + TABLE_GOATS + " WHERE " + COLUMN_ID + " = " + animal.getId();
-
-
-            updateQuery = "UPDATE " + TABLE_REMOVED + " SET "
-                    + COLUMN_EXIT_TYPE + " AS " + exitType;
-
-        }
-        else{
-            insertQuery = "INSERT INTO " + TABLE_REMOVED + " ( "
-                    + COLUMN_ID + ", "
-                    + COLUMN_TAG_NUMBER + ", "
-                    + COLUMN_GENDER + ", "
-                    + COLUMN_BIRTHDATE + ", "
-                    + COLUMN_YOUNG_MOM + ") " + "SELECT * FROM " + TABLE_SHEEPS + " WHERE " + COLUMN_ID + " = " + animal.getId();
-
-
-            updateQuery = "UPDATE " + TABLE_REMOVED + " SET "
-                    + COLUMN_EXIT_TYPE + " AS " + exitType;
-        }
-        db.execSQL(insertQuery);
-        db.execSQL(updateQuery);
-    }
     public int deleteAnimal(Animal animal){
         // Επιστρέφει ο πλήθος των γραμμών που διαγράφηκαν από τον πίνακα.
         int rowsDeleted = -1;
@@ -353,7 +297,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String deleteQuery = "DELETE FROM " + TABLE_GOATS + " WHERE " + COLUMN_ID + " = " + id;
             rowsDeleted = db.delete(TABLE_GOATS, COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
         }
-        else{
+        else if(animal instanceof Sheep){
             Sheep sheep = (Sheep) animal;
             int id = sheep.getId();
             String deleteQuery = "DELETE FROM " + TABLE_SHEEPS + " WHERE " + COLUMN_ID + " = " + id;

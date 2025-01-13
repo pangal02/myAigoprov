@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -111,8 +112,10 @@ public class AddBornAnimalsFragment extends Fragment {
             new Thread(()->{
                 DatabaseHelper dbHelper = new DatabaseHelper(requireContext());
                 SQLiteDatabase db = dbHelper.getReadableDatabase();
-                for(int i = 0; i < bornAnimals.size(); i++){
-                    dbHelper.addAnimal(bornAnimals.get(i));
+                for (Animal animal : bornAnimals){
+                    long result = dbHelper.addAnimal(animal);
+                    animal.setId((int) result);
+                    Log.d("SETID", "ID: "+animal.getId());
                 }
                 requireActivity().runOnUiThread(() ->
                         Snackbar.make(v, "Τα ζώα αποθηκεύτηκαν επιτυχώς!", Snackbar.LENGTH_LONG).show());

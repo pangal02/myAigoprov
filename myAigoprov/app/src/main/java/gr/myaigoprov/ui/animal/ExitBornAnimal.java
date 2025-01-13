@@ -38,7 +38,6 @@ public class ExitBornAnimal extends Fragment {
     private TextView textViewDate;
     private Button saveButton;
 
-
     public ExitBornAnimal() {
         super(R.layout.fragment_add_born_animals);
     }
@@ -121,77 +120,87 @@ public class ExitBornAnimal extends Fragment {
             }
 
 
-            ArrayList<Animal> exitAnimals = new ArrayList<>();
+            ArrayList<DeletedAnimal> exitAnimals = new ArrayList<>();
 
             if(animalType.equalsIgnoreCase("ΑΡΝΙΑ")){
                 Cursor cursor = dbHelper.getBornSheeps();
-                if(cursor != null){
-                    while (cursor.moveToNext()){
+                if(cursor != null && cursor.moveToFirst()){
+                    int cnt = 0;
+                    do{
                         int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
                         int tag = cursor.getInt(cursor.getColumnIndexOrThrow("tag_number"));
                         String birthdate = cursor.getString(cursor.getColumnIndexOrThrow("birthdate"));
                         boolean youngMom = cursor.getInt(cursor.getColumnIndexOrThrow("young_mom")) == 1 ? true : false;
 
-                        Goat goat = new Goat(UserManager.getInstance(requireContext()).getFarmer().getFarmerCode(),
-                                tag, Gender.OTHER, date);
-                        goat.setId(id);
-                        exitAnimals.add(goat);
-                    }
+                        Sheep sheep = new Sheep(id, UserManager.getInstance(requireContext()).getFarmer().getFarmerCode(),
+                                tag, Gender.OTHER, birthdate);
+                        sheep.setYoungMom(youngMom);
+
+                        exitAnimals.add(new DeletedAnimal(sheep, "ΑΡΝΙ", exitType));
+                        cnt++;
+                    }while (cursor.moveToNext() && cnt < numOfAnimals);
                     cursor.close();
                 }
             }
             else if(animalType.equalsIgnoreCase("ΚΑΤΣΙΚΙΑ")){
-                for(int i = 0; i < numOfAnimals; i++) {
-                    exitAnimals.add(new Goat(farmer.getFarmerCode(), -1, Gender.OTHER, date));
+                Cursor cursor = dbHelper.getBornGoats();
+                if(cursor != null && cursor.moveToFirst()){
+                    int cnt = 0;
+                    do{
+                        int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+                        int tag = cursor.getInt(cursor.getColumnIndexOrThrow("tag_number"));
+                        String birthdate = cursor.getString(cursor.getColumnIndexOrThrow("birthdate"));
+                        boolean youngMom = cursor.getInt(cursor.getColumnIndexOrThrow("young_mom")) == 1 ? true : false;
+
+                        Goat goat = new Goat(id, UserManager.getInstance(requireContext()).getFarmer().getFarmerCode(),
+                                tag, Gender.OTHER, date);
+                        DeletedAnimal deletedAnimal = new DeletedAnimal(goat, "ΚΑΤΣΙΚΙ", exitType);
+                        exitAnimals.add(deletedAnimal);
+                        cnt++;
+                        Log.d("GOAT", "ID: " + deletedAnimal.getAnimal().getId());
+                    }while (cursor.moveToNext() && cnt < numOfAnimals);
+                    cursor.close();
                 }
             }
 
             new Thread(()->{
                 int count = 0;
-                for (Animal animal : exitAnimals){
-                    int rowsDeleted = dbHelper.deleteAnimal(animal);
-                    long insertResult = dbHelper.setAsRemoved(animal, exitType);
-                    if(insertResult == -1){
-                        count++;
+                for (DeletedAnimal animal : exitAnimals){
+                    int del = dbHelper.deleteAnimal(animal.getAnimal());
+                    long r = dbHelper.setAsRemoved(animal, exitType);
+                    if(del > 0 && r > 0){
+                        Log.d("GOD", "DELETED ID: " + animal.getAnimal().getId());
                     }
                 }
-                if(count == 0) {
                     requireActivity().runOnUiThread(() ->
                             Snackbar.make(v, "Τα ζώα αποθηκεύτηκαν επιτυχώς!", Snackbar.LENGTH_LONG).show());
-                }
-                else if(count == bornInDatabase){
-                    requireActivity().runOnUiThread(() ->
-                            Snackbar.make(v, "Υπήρξε σφάλμα κατά την αποθήκευση των ζώων!", Snackbar.LENGTH_LONG).show());
-                }
-                else if (count > 0 && count < bornInDatabase){
-                    int finalCount = count;
-                    requireActivity().runOnUiThread(() ->
-                            Snackbar.make(v, "Δεν αποθηκεύτηκαν όλα τα ζώα, παρά μόνο " + finalCount, Snackbar.LENGTH_LONG).show());
-                }
-            }).start();
 
+            }).start();
+        dbHelper.close();
         });
+
 
         return root;
     }
 
     private void load(){
-        DatabaseHelper dbHelper = new DatabaseHelper(requireContext());
-        Cursor cursor = dbHelper.getBornGoats();
-        if (cursor != null && cursor.moveToFirst()) {
-            do {
-                int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
-                int tag = cursor.getInt(cursor.getColumnIndexOrThrow("tag_number"));
-                String gender = cursor.getString(cursor.getColumnIndexOrThrow("gender"));
-                String bdate = cursor.getString(cursor.getColumnIndexOrThrow("birthdate"));
+        try {
+            DatabaseHelper dbHelper = new DatabaseHelper(requireContext());
+            Cursor cursor = dbHelper.getBornGoats();
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+                    int tag = cursor.getInt(cursor.getColumnIndexOrThrow("tag_number"));
+                    String gender = cursor.getString(cursor.getColumnIndexOrThrow("gender"));
+                    String bdate = cursor.getString(cursor.getColumnIndexOrThrow("birthdate"));
 
 
-                Log.d("GOAT" , "{ID: " + id + ",TAG:" + tag + ",GENDER:" + gender + ",BDATE:"+bdate+"}");
+                    Log.d("GOAT" , "{ID: " + id + ",TAG:" + tag + ",GENDER:" + gender + ",BDATE:"+bdate+"}");
 
-            } while (cursor.moveToNext());
+                } while (cursor.moveToNext());
+            }
         }
-        cursor.close();
-        while (cursor.moveToNext());
+        catch (Exception e){}
     }
 
     private void openDatePicker() {
