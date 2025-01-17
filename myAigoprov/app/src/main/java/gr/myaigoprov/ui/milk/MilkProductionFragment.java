@@ -34,7 +34,7 @@ public class MilkProductionFragment extends Fragment {
     private EditText editTextCountAnimals;
     private Button buttonSelectDate, buttonSave;
     private String selectedMilkType, selectedDate;
-    private int savedCountAnimals = 0;
+
 
     @Nullable
     @Override
@@ -93,13 +93,30 @@ public class MilkProductionFragment extends Fragment {
 
     private void saveMilkProduction() {
         Farmer farmer = UserManager.getInstance(requireContext()).getFarmer();
-        String quantityStr = editTextQuantity.getText().toString();
-        String count = editTextCountAnimals.getText().toString();
+        String quantityStr = editTextQuantity.getText().toString().trim();
+        String count = editTextCountAnimals.getText().toString().trim();
+        selectedDate = textSelectedDate.getText().toString().trim();
 
-        if (selectedMilkType == null || quantityStr.isEmpty() || selectedDate == null || count.isEmpty() || count == null) {
-            Toast.makeText(requireContext(), "Παρακαλώ συμπληρώστε όλα τα πεδία!", Toast.LENGTH_SHORT).show();
+        if(quantityStr.isEmpty() || quantityStr.equals(" ")){
+            editTextQuantity.setError("Εισάγετε την ποσότητα!");
             return;
         }
+        if(quantityStr.equals("0")){
+            editTextQuantity.setError("Ποσότητα μεγαλύτερη από 0!");
+            return;
+        }
+        if(selectedDate == null){
+            textSelectedDate.setError("Επιλέξτε μια ημερομηνία!");
+            return;
+        }
+        if (count.isEmpty() || count.equals(" ")) {
+            editTextCountAnimals.setError("Εισάγετε τον αριθμό των ζώων!");
+            return;
+        }
+        if(count.equals("0")){
+            editTextCountAnimals.setError("Αριθμός των ζώων πάνω από 0!");
+        }
+
         if(farmer.getAnimalsType().equalsIgnoreCase("ΓΙΔΙΑ") &&
                 selectedMilkType.equalsIgnoreCase("ΠΡΟΒΕΙΟ")){
             Toast.makeText(requireContext(), "Δεν μπορείτε να προσθέσετε " + selectedMilkType + " γαλα ενώ έχετε " + farmer.getAnimalsType()+ "!", Toast.LENGTH_SHORT).show();
@@ -112,20 +129,17 @@ public class MilkProductionFragment extends Fragment {
         }
 
         double quantity = Double.parseDouble(quantityStr);
-        String date = textSelectedDate.getText().toString();
+        String date = selectedDate;
         int countAnimals = Integer.parseInt(count);
 
-        Milk milk;
-        if(selectedMilkType.equalsIgnoreCase("ΚΑΤΣΙΚΙΣΙΟ")){
-            milk = new Milk(quantity, date);
-        }
-        else{
-            milk = new Milk(quantity, date);
-        }
+        Milk milk= new Milk(quantity, date);
+        Log.d("MILK", "Milk{" + milk + "}");
+
         DatabaseHelper dbHelper = new DatabaseHelper(requireContext());
         if(selectedMilkType.equalsIgnoreCase("ΚΑΤΣΙΚΙΣΙΟ")){
             long id = dbHelper.addGoatMilk(milk, countAnimals);
             if (id != -1) {
+                milk.setId((int) id);
                 Log.d("Database", "Επιτυχής προσθήκη εγγραφής με ID: " + id + ", date: " + date + ", Quantity: " + quantity);
                 Toast.makeText(requireContext(), "Η παραγωγή αποθηκεύτηκε!", Toast.LENGTH_SHORT).show();
             } else {
@@ -144,6 +158,9 @@ public class MilkProductionFragment extends Fragment {
         Cursor cursor = dbHelper.getGoatMilkOrderedByLatest();
         if (cursor.moveToFirst()) {
             int animalCount = cursor.getInt(cursor.getColumnIndexOrThrow("count_animals"));
+            String date = cursor.getString(cursor.getColumnIndexOrThrow("date"));
+
+            textSelectedDate.setText(date);
             editTextCountAnimals.setText(String.valueOf(animalCount));
         }
         cursor.close();

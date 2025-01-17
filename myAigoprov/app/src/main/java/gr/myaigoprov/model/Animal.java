@@ -25,6 +25,15 @@ public abstract class Animal{
         this.youngMom = false;
     }
 
+    public Animal(int id, String farmerCode, int tagNumber, Gender gender, String birthdate, boolean youngMom){
+        this.id = id;
+        this.farmerCode = farmerCode;
+        this.tagNumber = tagNumber;
+        this.gender = gender;
+        this.birthdate = birthdate;
+        this.youngMom = youngMom;
+    }
+
     public int getId(){
         return id;
     }
@@ -81,7 +90,7 @@ public abstract class Animal{
 
     @Override
     public String toString(){
-        String result = "{TAG: " + tagNumber + ", fCode: " + farmerCode + ", Gender: " + gender
+        String result = "{ID: " + id + ", TAG: " + tagNumber + ", fCode: " + farmerCode + ", Gender: " + gender
                 + ", birthdate: " + birthdate  + "}";
         return result;
     }

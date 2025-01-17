@@ -37,6 +37,7 @@ public class ExitBornAnimal extends Fragment {
     private Button selectDateButton;
     private TextView textViewDate;
     private Button saveButton;
+    private Farmer farmer = UserManager.getInstance(requireContext()).getFarmer();
 
     public ExitBornAnimal() {
         super(R.layout.fragment_add_born_animals);
@@ -87,7 +88,6 @@ public class ExitBornAnimal extends Fragment {
 
             String date = textViewDate.getText().toString();
             String exitType = spinnerExitType.getSelectedItem().toString();
-            Farmer farmer = UserManager.getInstance(requireContext()).getFarmer();
 
             if(animalType.equalsIgnoreCase("ΑΡΝΙΑ") &&
                     farmer.getAnimalsType().equalsIgnoreCase("ΓΙΔΙΑ")){
@@ -132,8 +132,7 @@ public class ExitBornAnimal extends Fragment {
                         String birthdate = cursor.getString(cursor.getColumnIndexOrThrow("birthdate"));
                         boolean youngMom = cursor.getInt(cursor.getColumnIndexOrThrow("young_mom")) == 1 ? true : false;
 
-                        Sheep sheep = new Sheep(id, UserManager.getInstance(requireContext()).getFarmer().getFarmerCode(),
-                                tag, Gender.OTHER, birthdate);
+                        Sheep sheep = new Sheep(id, farmer.getFarmerCode(), tag, Gender.OTHER, birthdate, youngMom);
                         sheep.setYoungMom(youngMom);
 
                         exitAnimals.add(new DeletedAnimal(sheep, "ΑΡΝΙ", exitType));
@@ -152,8 +151,7 @@ public class ExitBornAnimal extends Fragment {
                         String birthdate = cursor.getString(cursor.getColumnIndexOrThrow("birthdate"));
                         boolean youngMom = cursor.getInt(cursor.getColumnIndexOrThrow("young_mom")) == 1 ? true : false;
 
-                        Goat goat = new Goat(id, UserManager.getInstance(requireContext()).getFarmer().getFarmerCode(),
-                                tag, Gender.OTHER, date);
+                        Goat goat = new Goat(id, farmer.getFarmerCode(),tag, Gender.OTHER, birthdate, youngMom);
                         DeletedAnimal deletedAnimal = new DeletedAnimal(goat, "ΚΑΤΣΙΚΙ", exitType);
                         exitAnimals.add(deletedAnimal);
                         cnt++;
@@ -169,11 +167,11 @@ public class ExitBornAnimal extends Fragment {
                     int del = dbHelper.deleteAnimal(animal.getAnimal());
                     long r = dbHelper.setAsRemoved(animal, exitType);
                     if(del > 0 && r > 0){
-                        Log.d("GOD", "DELETED ID: " + animal.getAnimal().getId());
+                        Log.d("Delete Animal", "DELETED ID: " + animal);
                     }
                 }
                     requireActivity().runOnUiThread(() ->
-                            Snackbar.make(v, "Τα ζώα αποθηκεύτηκαν επιτυχώς!", Snackbar.LENGTH_LONG).show());
+                            Snackbar.make(v, "Τα(ο) ζώα(ο) διαγράφηκαν(ε) επιτυχώς!", Snackbar.LENGTH_LONG).show());
 
             }).start();
         dbHelper.close();

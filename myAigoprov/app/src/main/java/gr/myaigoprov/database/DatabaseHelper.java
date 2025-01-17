@@ -22,7 +22,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Όνομα της βάσης δεδομένων
     private static final String DATABASE_NAME = "users.db";
     // Έκδοση της βάσης δεδομένων
-    private static final int DATABASE_VERSION = 9;
+    private static final int DATABASE_VERSION = 11;
 
     // Πίνακας για τα Goats
     public static final String TABLE_GOATS = "Goats";
@@ -81,7 +81,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Σχέδιο δημιουργίας πίνακα για τo κατσικίσιο γάλα
     private static final String CREATE_TABLE_GOAT_MILK = "CREATE TABLE " + TABLE_GOAT_MILK + " ("
             + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + COLUMN_ANIMAL_TYPE + " VARCHAR NOT NULL, "
             + COLUMN_DATE + " VARCHAR NOT NULL, "
             + COLUMN_QUANTITY + " REAL NOT NULL, "
             + COLUMN_COUNT_ANIMALS_MILK + " INTEGER NOT NULL);";
@@ -247,7 +246,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getGoatMilkOrderedByLatest() {
         SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT * FROM " + TABLE_GOAT_MILK + " ORDER BY " + COLUMN_ID + " DESC", null);
+        return db.rawQuery("SELECT * FROM " + TABLE_GOAT_MILK + " ORDER BY " + COLUMN_DATE + " DESC", null);
     }
 
     public Cursor getSheepMilkOrderedByLatest() {

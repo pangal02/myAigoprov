@@ -12,26 +12,21 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
 
-import gr.myaigoprov.MainActivity;
 import gr.myaigoprov.R;
 import gr.myaigoprov.model.Milk;
 
-public class MilkAdapter extends ArrayAdapter<String> {
-    private Map<String, ArrayList<Milk>> milkMap = new TreeMap<>(MilkFragment.getMilkMap());
-    private ArrayList<Milk> dayMilk = new ArrayList<>();
-    public MilkAdapter(@NonNull Context context, ArrayList<String> dataAarrayList) {
-        super(context, R.layout.list_milk, dataAarrayList);
+public class MilkProductionAdapter extends ArrayAdapter<Milk> {
+    private double totalQuantity;
+
+    public MilkProductionAdapter(@NonNull Context context, @NonNull ArrayList<Milk> dailyMilkProductions) {
+        super(context, R.layout.list_milk, dailyMilkProductions);
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View view, @NonNull ViewGroup parent){
-        String date = getItem(position);
-        double count = 0;
+        Milk currentProduction = getItem(position);
 
         if(view == null){
             view = LayoutInflater.from(getContext()).inflate(R.layout.list_milk, parent, false);
@@ -42,12 +37,9 @@ public class MilkAdapter extends ArrayAdapter<String> {
         TextView textViewSumQuantity = view.findViewById(R.id.listQuantity);
 
         imageView.setImageResource(R.drawable.goat);
-        textViewDate.setText(date);
-        dayMilk = milkMap.get(date);
-        for(Milk m : dayMilk){
-            count += m.getQuantity();
-        }
-        textViewSumQuantity.setText(String.format("%.2f kg", count));
+        textViewDate.setText(currentProduction.getDate());
+        totalQuantity = currentProduction.getQuantity();
+        textViewSumQuantity.setText(String.format("%.2f kg", totalQuantity));
 
         return view;
     }

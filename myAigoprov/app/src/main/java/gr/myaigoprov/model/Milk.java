@@ -1,14 +1,34 @@
 package gr.myaigoprov.model;
 
+import java.util.Date;
+
 public class Milk {
+    private Integer id;
     private double quantity;
-    private final String date;
-//    private int image;
+    private String date;
 
     public Milk(double quantity, String date){
+       setDate(date);
+       setQuantity(quantity);
+    }
+
+    public Milk(Integer id, double quantity, String date){
+        setId(id);
         this.quantity = quantity;
         this.date = date;
-//        this.image = image;
+    }
+
+    public Integer getId(){
+        return id;
+    }
+
+    public void setId(Integer id) {
+        if (id < 0) {
+            throw new IllegalArgumentException("Το id δεν μπορεί να είναι αρνητικό");
+        }
+        else {
+            this.id = id;
+        }
     }
 
     public double getQuantity(){
@@ -27,22 +47,19 @@ public class Milk {
         return date;
     }
 
-//    public void setDate(String newDate){
-//        if(newDate.isEmpty() || newDate == null){
-//            throw new IllegalArgumentException("Δεν μπορεί η ημερομηνία να είναι κενή");
-//        }
-//        else{
-//            this.date = date;
-//        }
-//    }
+    public void setDate(String newDate){
+        if(newDate.isEmpty() || newDate == null){
+            throw new IllegalArgumentException("Δεν μπορεί η ημερομηνία να είναι κενή");
+        }
+        else{
+            this.date = newDate;
+        }
+    }
 
-//    public int getImage() {
-//        return image;
-//    }
 
     @Override
     public String toString(){
-        return "Λίτρα: " + quantity + " Ημ/μηνία: " + date;
+        return "Γάλα{Λίτρα: " + quantity + " Ημ/μηνία: " + date + "}";
     }
 
 }

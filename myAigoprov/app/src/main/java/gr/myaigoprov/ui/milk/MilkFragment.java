@@ -9,16 +9,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
-
 import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -28,12 +22,10 @@ import gr.myaigoprov.model.Milk;
 
 public class MilkFragment extends Fragment {
     private ListView listView;
-    private MilkAdapter milkAdapter;
-    private ArrayList<String> milkArrayList;
-    private static Map<String, ArrayList<Milk>> milkMap;
+    private MilkProductionAdapter milkProdAdapter;
+    private ArrayList<Milk> dailyList;
     private DatabaseHelper dbHelper;
-
-
+    private double totalQuantity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -41,15 +33,15 @@ public class MilkFragment extends Fragment {
 
         listView = view.findViewById(R.id.listView);
         loadGoatMilk();
-        milkAdapter = new MilkAdapter(requireContext(), milkArrayList);
+        milkProdAdapter = new MilkProductionAdapter(requireContext(), dailyList);
 
-        listView.setAdapter(milkAdapter);
+        listView.setAdapter(milkProdAdapter);
         listView.setClickable(true);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(requireContext(), DetailedActivity.class);
-                intent.putExtra("date", milkAdapter.getItem(position).toString());
+                intent.putExtra("date", milkProdAdapter.getItem(position).getDate());
                 startActivity(intent);
             }
         });
@@ -60,35 +52,25 @@ public class MilkFragment extends Fragment {
     private void loadGoatMilk(){
         dbHelper = new DatabaseHelper(requireContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM goat_milk", null);
-        milkArrayList = new ArrayList<>();
-        milkMap = new TreeMap<>();
+
+        String countQuery = "SELECT date, SUM(quantity) FROM goat_milk GROUP BY date";
+        Cursor cursor = db.rawQuery(countQuery, null);
+        dailyList = new ArrayList<>();
         if (cursor != null && cursor.moveToFirst()) {
             do {
-                // Πάρε τις τιμές από τον πίνακα
-                double quantity = cursor.getDouble(cursor.getColumnIndexOrThrow("quantity"));
-                String date = cursor.getString(cursor.getColumnIndexOrThrow("date"));
+                String date = cursor.getString(0); // Πρώτη στήλη: date
+                totalQuantity = cursor.getDouble(1); // Δεύτερη στήλη: SUM(quantity)
+                Log.i("Database SUM MILK", "Date: " + date + ", Total Quantity: " + totalQuantity);
 
-                Milk milk = new Milk(quantity, date);
-                if(!milkArrayList.contains(milk.getDate())){
-                    milkArrayList.add(milk.getDate());
-                }
-                //MAP
-                if(milkMap.containsKey(date)){
-                    milkMap.get(date).add(milk);
-                }
-                else{
-                    milkMap.put(date, new ArrayList<>());
-                    milkMap.get(date).add(milk);
-                }
+                dailyList.add(new Milk(totalQuantity, date));
+
             } while (cursor.moveToNext());
 
             cursor.close();
         }
-    }
-
-    public static Map<String, ArrayList<Milk>> getMilkMap(){
-        return milkMap;
+        db.close();
+        //ταξινομεί την λίστα με βάση την ημερομηνία σε φθίνουσα σειρά
+        dailyList.sort((milk1, milk2) -> milk2.getDate().compareTo(milk1.getDate()));
     }
 
 }

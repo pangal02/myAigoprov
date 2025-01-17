@@ -45,6 +45,6 @@ public class DeletedAnimal {
     }
 
     public String toString(){
-        return animalType + super.toString();
+        return "(" +animalType + ")" + animal.toString();
     }
 }
