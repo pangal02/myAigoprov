@@ -1,0 +1,55 @@
+<resources>
+    <string name="app_name">myAigoprov</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+
+    <string name="menu_home">Αρχική</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <string-array name="animal_types">
+        <item>ΑΙΓΑ</item>
+        <item>ΠΡΟΒΑΤΟ</item>
+    </string-array>
+
+    <string-array name="born_animal_types">
+        <item>ΚΑΤΣΙΚΙΑ</item>
+        <item>ΑΡΝΙΑ</item>
+    </string-array>
+
+    <string-array name="animal_genders">
+        <item>ΑΡΣΕΝΙΚΟ</item>
+        <item>ΘΗΛΥΚΟ</item>
+        <item>ΑΛΛΟ</item>
+    </string-array>
+
+    <string-array name="milk_type">
+        <item>ΚΑΤΣΙΚΙΣΙΟ</item>
+        <item>ΠΡΟΒΕΙΟ</item>
+    </string-array>
+
+    <string-array name="farmer_types">
+        <item>ΓΙΔΙΑ</item>
+        <item>ΠΡΟΒΑΤΑ</item>
+        <item>ΑΙΓΟΠΡΟΒΑΤΑ</item>
+    </string-array>
+
+    <string-array name="exit_types">
+        <item>-- ΕΠΙΛΟΓΗ --</item>
+        <item>ΣΦΑΓΗ</item>
+        <item>ΑΠΩΛΕΙΑ</item>
+        <item>ΠΩΛΗΣΗ</item>
+    </string-array>
+
+    <string name="title_activity_create_user">CreateUserActivity</string>
+
+
+</resources>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Προσθήκη Παραγωγής Γάλακτος"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:paddingBottom="16dp"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimary"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Είδος Γάλακτος"
+        android:textSize="16sp" />
+
+    <Spinner
+        android:id="@+id/spinnerMilkType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/milk_type"
+        android:spinnerMode="dialog"
+        android:padding="18dp"
+        android:background="@drawable/rounded_edittext"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ποσότητα (κιλά)"
+        android:textSize="16sp"
+        android:layout_marginTop="16dp" />
+
+    <EditText
+        android:id="@+id/editTextQuantity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:hint="Πληκτρολογήστε την ποσότητα"
+        android:layout_marginBottom="16dp"
+        android:padding="18dp"
+        android:background="@drawable/rounded_edittext"
+        android:textSize="16sp"/>
+
+<!--  αριθμός αρμεγόμενων ζώων  -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Αριθμός αρμεγώμενων ζώων"
+        android:textSize="16sp"
+        android:layout_marginTop="16dp" />
+
+    <EditText
+        android:id="@+id/editTextAnimalCount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:hint="Αριθμός"
+        android:layout_marginBottom="16dp"
+        android:padding="18dp"
+        android:background="@drawable/rounded_edittext"
+        android:textSize="16sp"/>
+
+    <!-- Ημερομηνία Γέννησης -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ημερομηνία"
+        android:layout_marginTop="16dp" />
+    <TextView
+        android:id="@+id/textViewDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:hint="Δεν επιλέχθηκε ημερομηνία"
+        android:padding="18dp"
+        android:textSize="16sp"
+        android:textStyle="bold"/>
+
+    <Button
+        android:id="@+id/buttonSelectDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Επιλέξτε Ημερομηνία"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/colorAccent"/>
+
+    <Button
+        android:id="@+id/buttonSave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Αποθήκευση"
+        android:layout_marginTop="24dp"
+        android:backgroundTint="@color/colorPrimary"
+        android:textColor="@android:color/white" />
+</LinearLayout>

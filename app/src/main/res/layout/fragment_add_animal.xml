@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/tvCreateUserTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Προσθήκη ζώου"
+        android:textColor="@color/colorPrimary"
+        android:textSize="24sp"
+        android:textStyle="bold"  />
+
+    <!-- Επιλογή Τύπου Ζώου -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Τύπος Ζώου"
+        android:layout_marginTop="16dp" />
+
+    <Spinner
+        android:id="@+id/spinnerAnimalType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/animal_types"
+        android:spinnerMode="dialog"
+        android:padding="18dp"
+        android:background="@drawable/rounded_edittext"
+        android:textColor="@color/black"
+        android:textSize="16sp" />
+
+    <!-- Επιλογή Γένους Ζώου -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Γένος Ζώου"
+        android:layout_marginTop="16dp" />
+
+    <Spinner
+        android:id="@+id/spinnerAnimalGender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/animal_types"
+        android:spinnerMode="dialog"
+        android:padding="18dp"
+        android:background="@drawable/rounded_edittext"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Αριθμός Ενωτίου -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Αριθμός Ενωτίου" />
+    <EditText
+        android:id="@+id/editTextTagNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Εισάγετε αριθμό"
+        android:inputType="number"
+        android:entries="@array/animal_types"
+        android:spinnerMode="dialog"
+        android:padding="18dp"
+        android:background="@drawable/rounded_edittext"
+        android:textColor="@color/black"
+        android:textSize="16sp"/>
+
+    <!-- Ημερομηνία Γέννησης -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ημερομηνία Γέννησης"
+        android:layout_marginTop="16dp" />
+    <TextView
+        android:id="@+id/textViewDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:hint="Δεν επιλέχθηκε ημερομηνία"
+        android:padding="18dp"
+        android:textSize="16sp"
+        android:textStyle="bold"/>
+
+    <Button
+        android:id="@+id/buttonSelectDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Επιλογή Ημερομηνίας"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/colorAccent"
+        android:layout_marginTop="8dp" />
+
+    <!-- Κουμπί Αποθήκευσης -->
+    <Button
+        android:id="@+id/buttonSaveAnimal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/primary"
+        android:text="Αποθήκευση"
+        android:textColor="@color/white"
+        android:layout_marginTop="16dp" />
+</LinearLayout>
