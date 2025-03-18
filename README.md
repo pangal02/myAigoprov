@@ -22,4 +22,4 @@
 
 1. Κλωνοποιήστε το αποθετήριο:
    ```bash
-   git clone https://github.com/yourusername/MyAigoprov.git
+   git clone https://github.com/pangal02/myAigoprov.git
